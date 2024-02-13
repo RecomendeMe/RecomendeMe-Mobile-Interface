@@ -8,10 +8,18 @@ const App = () => {
     // Função para fazer a requisição para sua API
     const fetchRecommendation = async () => {
       try {
-        const response = await fetch('http://localhost:3000/recommendations/2');
+        const response = await fetch('NGORK_SERVER_DOMAIN', {
+          headers: {
+            // Adicione os cabeçalhos desejados aqui
+            'Content-Type': 'application/json',
+            // Outros cabeçalhos, se necessário
+          },
+        });
+        
         if (!response.ok) {
           throw new Error('Falha ao buscar recomendação');
         }
+        
         const data = await response.json();
         // Atualizando o estado da recomendação diretamente com os dados
         setRecommendation(data);
@@ -23,7 +31,6 @@ const App = () => {
     // Chamando a função para buscar a recomendação ao montar o componente
     fetchRecommendation();
   }, []);
-
   // Verifica se ainda não carregou a recomendação
   if (!recommendation) {
     return (
