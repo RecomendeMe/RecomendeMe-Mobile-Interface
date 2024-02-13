@@ -1,90 +1,61 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList } from 'react-native';
 
 const App = () => {
   const [recommendations, setRecommendations] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     // Função para fazer a requisição para sua API
     const fetchRecommendations = async () => {
       try {
-        const response = await fetch('GORK_SERVER_DOMAIN', {
-          headers: {
-            // Adicione os cabeçalhos desejados aqui
-            'Content-Type': 'application/json',
-            // Outros cabeçalhos, se necessário
-          },
-        });
-        
+        const response = await fetch('');
         if (!response.ok) {
           throw new Error('Falha ao buscar recomendações');
         }
-        
         const data = await response.json();
-        // Verifica se há recomendações na lista
-        if (Array.isArray(data)) {
-          setRecommendations(data);
-        } else {
-          throw new Error('Nenhuma recomendação encontrada');
-        }
-        setIsLoading(false);
+        // Atualizando o estado das recomendações diretamente com os dados
+        setRecommendations(data);
       } catch (error) {
         console.error(error);
-        setError(error.message || 'Erro ao carregar recomendações');
-        setIsLoading(false);
       }
     };
-  
+
     // Chamando a função para buscar as recomendações ao montar o componente
     fetchRecommendations();
   }, []);
 
-  // Verifica se ainda não carregou as recomendações ou se houve um erro
-  if (isLoading) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.loadingText}>Carregando...</Text>
-      </View>
-    );
-  }
+  // Renderiza cada item da lista
+  const renderItem = ({ item }) => {
+    const { usuario, titulo, descricao, img } = item;
 
-  if (error) {
     return (
-      <View style={styles.container}>
-        <Text style={styles.errorText}>{error}</Text>
-      </View>
-    );
-  }
+      <View style={styles.itemContainer}>
+        <View style={styles.imageContainer}>
+          <Image source={{ uri: img }} style={styles.image} />
+        </View>
+        
+        <Text style={styles.albumTitle}>{`${usuario} - ${titulo}`}</Text>
+        <Text style={styles.description}>{descricao}</Text>
 
-  // Verifica se há recomendações disponíveis
-  if (!recommendations || recommendations.length === 0) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.errorText}>Nenhuma recomendação encontrada</Text>
+        <View style={styles.iconsContainer}>
+          {/* Adicione os TouchableOpacity components para os ícones aqui */}
+        </View>
       </View>
     );
-  }
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerText}>紹介してください</Text>
+        <Text style={styles.headerText}>RecomendeMe - Música</Text>
       </View>
 
-      <ScrollView contentContainerStyle={styles.scrollViewContent}>
-        {recommendations.map((recommendation, index) => (
-          <View key={index} style={styles.recommendationContainer}>
-            <View style={styles.imageContainer}>
-              <Image source={{ uri: recommendation.img }} style={styles.image} />
-            </View>
-            <Text style={styles.albumTitle}>{`${recommendation.usuario} - ${recommendation.titulo}`}</Text>
-            <Text style={styles.description}>{recommendation.descricao}</Text>
-            {/* Adicione os TouchableOpacity components para os ícones aqui */}
-          </View>
-        ))}
-      </ScrollView>
+      <FlatList
+        data={recommendations}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id.toString()}
+        style={styles.flatList}
+      />
     </View>
   );
 };
@@ -92,7 +63,7 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#8c0000',
+    backgroundColor: 'black',
   },
   header: {
     backgroundColor: 'black',
@@ -103,13 +74,11 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 20,
   },
-  scrollViewContent: {
-    paddingVertical: 20,
-  },
-  recommendationContainer: {
+  flatList: {
     padding: 20,
+  },
+  itemContainer: {
     marginBottom: 20,
-    backgroundColor: '#3b3b3b',
   },
   imageContainer: {
     alignItems: 'center',
@@ -133,18 +102,6 @@ const styles = StyleSheet.create({
   iconsContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 20,
-  },
-  loadingText: {
-    color: 'white',
-    fontSize: 18,
-    textAlign: 'center',
-    marginTop: 20,
-  },
-  errorText: {
-    color: 'white',
-    fontSize: 18,
-    textAlign: 'center',
     marginTop: 20,
   },
 });
