@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 
 const App = () => {
-  const [recommendation, setRecommendation] = useState(null);
+  const [recommendations, setRecommendations] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     // Função para fazer a requisição para sua API
-    const fetchRecommendation = async () => {
+    const fetchRecommendations = async () => {
       try {
-        const response = await fetch('NGORK_SERVER_DOMAIN', {
+        const response = await fetch('GORK_SERVER_DOMAIN', {
           headers: {
             // Adicione os cabeçalhos desejados aqui
             'Content-Type': 'application/json',
@@ -17,22 +19,30 @@ const App = () => {
         });
         
         if (!response.ok) {
-          throw new Error('Falha ao buscar recomendação');
+          throw new Error('Falha ao buscar recomendações');
         }
         
         const data = await response.json();
-        // Atualizando o estado da recomendação diretamente com os dados
-        setRecommendation(data);
+        // Verifica se há recomendações na lista
+        if (Array.isArray(data)) {
+          setRecommendations(data);
+        } else {
+          throw new Error('Nenhuma recomendação encontrada');
+        }
+        setIsLoading(false);
       } catch (error) {
         console.error(error);
+        setError(error.message || 'Erro ao carregar recomendações');
+        setIsLoading(false);
       }
     };
   
-    // Chamando a função para buscar a recomendação ao montar o componente
-    fetchRecommendation();
+    // Chamando a função para buscar as recomendações ao montar o componente
+    fetchRecommendations();
   }, []);
-  // Verifica se ainda não carregou a recomendação
-  if (!recommendation) {
+
+  // Verifica se ainda não carregou as recomendações ou se houve um erro
+  if (isLoading) {
     return (
       <View style={styles.container}>
         <Text style={styles.loadingText}>Carregando...</Text>
@@ -40,8 +50,22 @@ const App = () => {
     );
   }
 
-  // Extrai os dados da recomendação
-  const { usuario, titulo, descricao, img } = recommendation;
+  if (error) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.errorText}>{error}</Text>
+      </View>
+    );
+  }
+
+  // Verifica se há recomendações disponíveis
+  if (!recommendations || recommendations.length === 0) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.errorText}>Nenhuma recomendação encontrada</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -49,18 +73,18 @@ const App = () => {
         <Text style={styles.headerText}>紹介してください</Text>
       </View>
 
-      <View style={styles.content}>
-        <View style={styles.imageContainer}>
-          <Image source={{ uri: img }} style={styles.image} />
-        </View>
-        
-        <Text style={styles.albumTitle}>{`${usuario} - ${titulo}`}</Text>
-        <Text style={styles.description}>{descricao}</Text>
-
-        <View style={styles.iconsContainer}>
-          {/* Adicione os TouchableOpacity components para os ícones aqui */}
-        </View>
-      </View>
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        {recommendations.map((recommendation, index) => (
+          <View key={index} style={styles.recommendationContainer}>
+            <View style={styles.imageContainer}>
+              <Image source={{ uri: recommendation.img }} style={styles.image} />
+            </View>
+            <Text style={styles.albumTitle}>{`${recommendation.usuario} - ${recommendation.titulo}`}</Text>
+            <Text style={styles.description}>{recommendation.descricao}</Text>
+            {/* Adicione os TouchableOpacity components para os ícones aqui */}
+          </View>
+        ))}
+      </ScrollView>
     </View>
   );
 };
@@ -79,8 +103,13 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 20,
   },
-  content: {
+  scrollViewContent: {
+    paddingVertical: 20,
+  },
+  recommendationContainer: {
     padding: 20,
+    marginBottom: 20,
+    backgroundColor: '#3b3b3b',
   },
   imageContainer: {
     alignItems: 'center',
@@ -107,6 +136,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   loadingText: {
+    color: 'white',
+    fontSize: 18,
+    textAlign: 'center',
+    marginTop: 20,
+  },
+  errorText: {
     color: 'white',
     fontSize: 18,
     textAlign: 'center',
