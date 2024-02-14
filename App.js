@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import RecommendationForm from './recommendationForm';
 import TheWall from './TheWall';
+import latestRecommendation from './lastRecommendation';
 
 
 
@@ -15,6 +16,7 @@ const App = () => {
 
       <Stack.Screen name="RecomendeMe" component={RecommendationForm} />
       <Stack.Screen name="Wall" component={TheWall} />
+      <Stack.Screen name="Last" component={latestRecommendation} />
     
 
    

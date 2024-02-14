@@ -8,7 +8,7 @@ const TheWall = () => {
     // Função para fazer a requisição para sua API
     const fetchRecommendations = async () => {
       try {
-        const response = await fetch('https://cb66-187-19-163-88.ngrok-free.app/recommendations');
+        const response = await fetch('https://cc7f-187-19-163-88.ngrok-free.app/recommendations');
         if (!response.ok) {
           throw new Error('Falha ao buscar recomendações');
         }

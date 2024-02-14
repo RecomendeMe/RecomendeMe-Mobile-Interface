@@ -17,7 +17,7 @@ const RecommendationForm = ({ apiEndpoint }) => {
         descricao: description,
       };
 
-      const response = await fetch('https://cb66-187-19-163-88.ngrok-free.app/recommendations', {
+      const response = await fetch('https://cc7f-187-19-163-88.ngrok-free.app/recommendations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -63,6 +63,8 @@ const RecommendationForm = ({ apiEndpoint }) => {
       <Button title="Enviar" onPress={handleSubmission} />
 
       {/* Botão para redirecionar para outra página */}
+      <Button title="Ver Recomendação" onPress={() => navigation.navigate('Last')} />
+
       <Button title="Ver Mural" onPress={() => navigation.navigate('Wall')} />
     </View>
   );
