@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Linking, Image, TouchableOpacity } from 'react-native';
-import Icon from './assets/deezer_f.png';
+import Icon from './assets/Dee.png';
+import Icon_Spotify from './assets/Spot.png'
 
 
 // Importe o ícone localizado na pasta assets
@@ -15,7 +16,7 @@ const RecommendationForm = ({ apiEndpoint }) => {
 
   const fetchLatestRecommendation = async () => {
     try {
-      const response = await fetch('https://cc7f-187-19-163-88.ngrok-free.app/recommendations/recommendation');
+      const response = await fetch('https://d6fe-187-19-163-88.ngrok-free.app/recommendations/recommentadion');
       const data = await response.json();
       setLatestRecommendation(data);
     } catch (error) {
@@ -23,11 +24,19 @@ const RecommendationForm = ({ apiEndpoint }) => {
     }
   };
 
-  const handleRedirect = () => {
+  const handleRedirectDeezer = () => {
     if (latestRecommendation && latestRecommendation.reclink) {
       Linking.openURL(latestRecommendation.reclink);
+      Linking.openURL(latestRecommendation.reclink_spotify)
     }
   };
+
+  const handleRedirectSpotify = () => {
+    if (latestRecommendation && latestRecommendation.reclink_spotify) {
+      Linking.openURL(latestRecommendation.reclink_spotify)
+    }
+  };
+
 
   return (
     <View style={styles.container}>
@@ -41,8 +50,15 @@ const RecommendationForm = ({ apiEndpoint }) => {
           <Text style={styles.username}>Por: {latestRecommendation.usuario}</Text>
           <Text style={styles.description}>{latestRecommendation.descricao}</Text>
           {/* Use o ícone localizado na pasta assets */}
-          <TouchableOpacity onPress={handleRedirect}>
+
+
+          <TouchableOpacity onPress={handleRedirectDeezer}>
             <Image source={Icon} style={styles.icon} />
+          </TouchableOpacity>
+
+
+          <TouchableOpacity onPress={handleRedirectSpotify}>
+            <Image source={Icon_Spotify} style={styles.icon} />
           </TouchableOpacity>
         </View>
       )}
