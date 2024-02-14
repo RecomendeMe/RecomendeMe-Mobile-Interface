@@ -1,109 +1,28 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList } from 'react-native';
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import RecommendationForm from './recommendationForm';
+import TheWall from './TheWall';
+
+
+
+const Stack = createStackNavigator();
 
 const App = () => {
-  const [recommendations, setRecommendations] = useState([]);
-
-  useEffect(() => {
-    // Função para fazer a requisição para sua API
-    const fetchRecommendations = async () => {
-      try {
-        const response = await fetch('');
-        if (!response.ok) {
-          throw new Error('Falha ao buscar recomendações');
-        }
-        const data = await response.json();
-        // Atualizando o estado das recomendações diretamente com os dados
-        setRecommendations(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    // Chamando a função para buscar as recomendações ao montar o componente
-    fetchRecommendations();
-  }, []);
-
-  // Renderiza cada item da lista
-  const renderItem = ({ item }) => {
-    const { usuario, titulo, descricao, img } = item;
-
-    return (
-      <View style={styles.itemContainer}>
-        <View style={styles.imageContainer}>
-          <Image source={{ uri: img }} style={styles.image} />
-        </View>
-        
-        <Text style={styles.albumTitle}>{`${usuario} - ${titulo}`}</Text>
-        <Text style={styles.description}>{descricao}</Text>
-
-        <View style={styles.iconsContainer}>
-          {/* Adicione os TouchableOpacity components para os ícones aqui */}
-        </View>
-      </View>
-    );
-  };
-
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>RecomendeMe - Música</Text>
-      </View>
+    <NavigationContainer>
+      <Stack.Navigator>
 
-      <FlatList
-        data={recommendations}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
-        style={styles.flatList}
-      />
-    </View>
+      <Stack.Screen name="RecomendeMe" component={RecommendationForm} />
+      <Stack.Screen name="Wall" component={TheWall} />
+    
+
+   
+      
+        
+      </Stack.Navigator>
+    </NavigationContainer>
   );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'black',
-  },
-  header: {
-    backgroundColor: 'black',
-    padding: 15,
-    alignItems: 'center',
-  },
-  headerText: {
-    color: 'white',
-    fontSize: 20,
-  },
-  flatList: {
-    padding: 20,
-  },
-  itemContainer: {
-    marginBottom: 20,
-  },
-  imageContainer: {
-    alignItems: 'center',
-  },
-  image: {
-    width: 300,
-    height: 300,
-  },
-  albumTitle: {
-    color: 'white',
-    textAlign: 'center',
-    fontSize: 16,
-    marginTop: 10,
-  },
-  description: {
-    color: 'white',
-    textAlign: 'center',
-    fontSize: 14,
-    marginTop: 5,
-  },
-  iconsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 20,
-  },
-});
+}
 
 export default App;
