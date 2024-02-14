@@ -16,7 +16,7 @@ const RecommendationForm = ({ apiEndpoint }) => {
 
   const fetchLatestRecommendation = async () => {
     try {
-      const response = await fetch('https://d6fe-187-19-163-88.ngrok-free.app/recommendations/recommentadion');
+      const response = await fetch('https://90b3-187-19-163-88.ngrok-free.app/recommendations/recommentadion');
       const data = await response.json();
       setLatestRecommendation(data);
     } catch (error) {
@@ -26,8 +26,7 @@ const RecommendationForm = ({ apiEndpoint }) => {
 
   const handleRedirectDeezer = () => {
     if (latestRecommendation && latestRecommendation.reclink) {
-      Linking.openURL(latestRecommendation.reclink);
-      Linking.openURL(latestRecommendation.reclink_spotify)
+      Linking.openURL(latestRecommendation.reclink)
     }
   };
 
@@ -42,24 +41,28 @@ const RecommendationForm = ({ apiEndpoint }) => {
     <View style={styles.container}>
       {latestRecommendation && (
         <View style={styles.recommendationContainer}>
-          <Text style={styles.label}>Última Recomendação:</Text>
+          <Text style={styles.label}>Recomendado Por: <Text style={styles.username}>{latestRecommendation.usuario}</Text></Text>
           <View style={styles.imageContainer}>
           <Image source={{ uri: latestRecommendation.img }} style={styles.image} />
         </View>
           <Text style={styles.title}>{latestRecommendation.titulo}</Text>
-          <Text style={styles.username}>Por: {latestRecommendation.usuario}</Text>
+          
           <Text style={styles.description}>{latestRecommendation.descricao}</Text>
           {/* Use o ícone localizado na pasta assets */}
 
 
-          <TouchableOpacity onPress={handleRedirectDeezer}>
-            <Image source={Icon} style={styles.icon} />
-          </TouchableOpacity>
+
+                <View style={styles.iconContainer}>
+              <TouchableOpacity onPress={handleRedirectDeezer}>
+                <Image source={Icon} style={styles.icon} />
+              </TouchableOpacity>
 
 
-          <TouchableOpacity onPress={handleRedirectSpotify}>
-            <Image source={Icon_Spotify} style={styles.icon} />
-          </TouchableOpacity>
+              <TouchableOpacity onPress={handleRedirectSpotify}>
+                <Image source={Icon_Spotify} style={styles.icon} />
+              </TouchableOpacity>
+            </View>
+           
         </View>
       )}
     </View>
@@ -71,6 +74,18 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: 'black',
+    position:'relative',
+    flexDirection: 'row', // Para posicionar os ícones lado a lado
+    justifyContent: 'center', // Para centralizar os ícones horizontalmente
+  },
+
+  iconContainer: {
+
+    flexDirection: 'row', // Alinha os ícones horizontalmente
+    alignItems: 'center', // Centraliza os ícones verticalmente
+
+
+
   },
   recommendationContainer: {
     marginBottom: 20,
@@ -79,6 +94,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginBottom: 5,
     fontWeight: 'bold',
+    color: 'white'
     
   },
   title: {
@@ -89,16 +105,32 @@ const styles = StyleSheet.create({
   username: {
     marginBottom: 5,
     color: 'white',
+    textDecorationLine: 'underline',
   },
   description: {
     marginBottom: 10,
     color: 'white',
   },
-  icon: {
-    alignSelf: 'center',
-    marginTop: 10,
-    width:50,
-    height: 50,
+
+  icon:{
+    width: 35, // Ajuste conforme necessário
+    height: 35, // Ajuste conforme necessário
+    resizeMode: 'contain', // Ajuste conforme necessário
+    marginRight: 25, // Espaçamento entre os ícones
+
+  },
+
+
+  Deezericon: {
+    position: 'absolute',
+    left: 0, // Posição horizontal do ícone Deezer
+  },
+
+  Spotifyicon: {
+
+    position: 'absolute',
+    left: 40, // Posição horizontal do ícone Spotify (ajuste conforme necessário)
+   
   },
   image: {
     width: 300,

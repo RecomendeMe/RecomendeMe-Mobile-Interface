@@ -17,7 +17,7 @@ const RecommendationForm = ({ apiEndpoint }) => {
         descricao: description,
       };
 
-      const response = await fetch('https://d6fe-187-19-163-88.ngrok-free.app/recommendations', {
+      const response = await fetch('https://90b3-187-19-163-88.ngrok-free.app/recommendations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
